@@ -1,0 +1,40 @@
+# === Исполняемые файлы ===
+*.exe
+*.out
+app
+test
+1
+em_wave
+
+# === Объектные файлы ===
+*.o
+*.obj
+
+# === Временные файлы ===
+*.tmp
+*.swp
+*~
+*.log
+
+# === IDE и редакторы ===
+.vscode/
+.idea/
+*.sln
+*.suo
+*.user
+
+# === Системные файлы ===
+Thumbs.db
+.DS_Store
+Desktop.ini
+
+# === Сборка ===
+build/
+bin/
+obj/
+
+# Code::Blocks project files
+*.cbp
+*.depend
+*.layout
+*.cbp.user
