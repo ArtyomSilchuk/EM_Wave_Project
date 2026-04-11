@@ -1,46 +1,90 @@
 // main.cpp
-#include <iostream>
-#include "physics/Vector3.h"  // Путь к заголовку
+#include <SFML/Graphics.hpp>
+#include "physics/EMWave.h"
+#include "render/WaveRenderer.h"
 
 int main() {
-    std::cout << "=== Тест Vector3 ===" << std::endl;
+    // Создаём окно SFML
+    sf::RenderWindow window(sf::VideoMode(1200, 800), "EM Wave Simulator");
+    window.setFramerateLimit(60);
 
-    // Тест 1: Конструктор
-    Vector3 a(1.0f, 2.0f, 3.0f);
-    Vector3 b(4.0f, 5.0f, 6.0f);
-    std::cout << "a = (" << a.x << ", " << a.y << ", " << a.z << ")" << std::endl;
-    std::cout << "b = (" << b.x << ", " << b.y << ", " << b.z << ")" << std::endl;
+    // Создаём модель волны
+    EMWave wave(
+        0.5f,   // frequency (Гц)
+        400.0f,   // wavelength (м)
+        100.0f,  // amplitude_E
+        100.0f,  // amplitude_B
+        0.0f    // phase
+    );
 
-    // Тест 2: Сложение
-    Vector3 c = a + b;
-    std::cout << "a + b = (" << c.x << ", " << c.y << ", " << c.z << ")" << std::endl;
+    // Создаём рендерер
+    WaveRenderer renderer(
+        wave,
+        1.0f,    // scale: 1 физ.единица = 1 пиксель
+        500,     // samples: количество точек для отрисовки
+        800.0f   // z_range: диапазон по оси Z
+    );
+    renderer.setColors(sf::Color::Red, sf::Color::Cyan);
+    renderer.setOffset(sf::Vector2f(600.0f, 400.0f));  // Центр экрана
 
-    // Тест 3: Вычитание
-    Vector3 d = a - b;
-    std::cout << "a - b = (" << d.x << ", " << d.y << ", " << d.z << ")" << std::endl;
+    sf::Clock clock;
 
-    // Тест 4: Умножение на скаляр
-    Vector3 e = a * 2.0f;
-    std::cout << "a * 2 = (" << e.x << ", " << e.y << ", " << e.z << ")" << std::endl;
+    // Главный цикл
+    while (window.isOpen()) {
+        float dt = clock.restart().asSeconds();
 
-    // Тест 5: Умножение скаляра на вектор (свободная функция)
-    Vector3 f = 3.0f * a;
-    std::cout << "3 * a = (" << f.x << ", " << f.y << ", " << f.z << ")" << std::endl;
+        // Обработка событий
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed) {
+                window.close();
+            }
+            // Управление клавишами
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Escape) {
+                    window.close();
+                }
+                if (event.key.code == sf::Keyboard::Up) {
+                    wave.setFrequency(wave.getFrequency() + 0.5f);
+                }
+                if (event.key.code == sf::Keyboard::Down) {
+                    wave.setFrequency(wave.getFrequency() - 0.5f);
+                }
+            }
+        }
 
-    // Тест 6: Деление на скаляр
-    Vector3 g = a / 2.0f;
-    std::cout << "a / 2 = (" << g.x << ", " << g.y << ", " << g.z << ")" << std::endl;
+        // Обновление
+        wave.update(dt);
+        renderer.update();
 
-    // Тест 7: Длина вектора
-    float len = a.length();
-    std::cout << "length(a) = " << len << std::endl;
+        // Отрисовка
+        window.clear(sf::Color::Black);
 
-    // Тест 8: Нормализация
-    Vector3 n = a.normalized();
-    std::cout << "normalized(a) = (" << n.x << ", " << n.y << ", " << n.z << ")" << std::endl;
-    std::cout << "length(normalized(a)) = " << n.length() << std::endl;
+        // Рисуем оси координат (для наглядности)
+        sf::VertexArray axes(sf::Lines, 6);
+        axes[0].position = sf::Vector2f(100, 400);
+        axes[0].color = sf::Color::White;
+        axes[1].position = sf::Vector2f(1100, 400);
+        axes[1].color = sf::Color::White;
+        axes[2].position = sf::Vector2f(600, 100);
+        axes[2].color = sf::Color::White;
+        axes[3].position = sf::Vector2f(600, 700);
+        axes[3].color = sf::Color::White;
+        axes[4].position = sf::Vector2f(600, 400);
+        axes[4].color = sf::Color::Yellow;
+        axes[5].position = sf::Vector2f(800, 300);
+        axes[5].color = sf::Color::Yellow;
+        window.draw(axes);
 
-    std::cout << "\n=== Все тесты завершены ===" << std::endl;
+        // Рисуем волну
+        renderer.draw(window);
+
+        // Рисуем информацию
+        sf::Text info;
+        // (Здесь можно добавить вывод текста, если подключён шрифт)
+
+        window.display();
+    }
 
     return 0;
 }
