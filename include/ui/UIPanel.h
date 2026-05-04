@@ -9,7 +9,7 @@ public:
     UIPanel(sf::RenderWindow& window, const sf::Font& font);
     void draw();
     void handleEvent(const sf::Event& event, EMWave& wave);
-    void updateInfo(const EMWave& wave); // Обновляет только текстовые данные
+    void updateInfo(const EMWave& wave); // ÐžÐ±Ð½Ð¾Ð²Ð»ÑÐµÑ‚ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ñ‚ÐµÐºÑÑ‚Ð¾Ð²Ñ‹Ðµ Ð´Ð°Ð½Ð½Ñ‹Ðµ
 
 private:
     sf::RenderWindow& window;
@@ -23,7 +23,7 @@ private:
         std::string labelStr;
         sf::Text label;
         sf::RectangleShape track;
-        sf::CircleShape thumb;
+        sf::RectangleShape thumb;
         sf::Text valText;
         float minVal, maxVal, curVal;
         bool isHovered(sf::Vector2f mp) const { 

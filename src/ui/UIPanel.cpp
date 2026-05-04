@@ -6,15 +6,15 @@
 UIPanel::UIPanel(sf::RenderWindow& window, const sf::Font& font)
     : window(window), font(font), dragIdx(-1)
 {
-    bg.setSize({380, 780});
-    bg.setPosition(810, 10);
-    bg.setFillColor(sf::Color(30, 30, 40));
+    bg.setSize({400, 300});
+    bg.setPosition(0, 0);
+    bg.setFillColor(sf::Color(89, 53, 87));
 
     title.setFont(font);
     title.setString("EM Wave Parameters");
     title.setCharacterSize(18);
     title.setFillColor(sf::Color::White);
-    title.setPosition(820, 15);
+    title.setPosition(10, 10);
 
     sliders.resize(4);
 
@@ -48,32 +48,32 @@ UIPanel::UIPanel(sf::RenderWindow& window, const sf::Font& font)
 }
 
 void UIPanel::layout() {
-    float y = 50;
+    float y = 40;
     for (auto& s : sliders) {
         s.label.setFont(font);
         s.label.setString(s.labelStr + ":");
         s.label.setCharacterSize(14);
         s.label.setFillColor(sf::Color(200, 200, 200));
-        s.label.setPosition(825, y);
+        s.label.setPosition(10, y);
 
         s.track.setSize({320, 6});
-        s.track.setPosition(835, y + 22);
-        s.track.setFillColor(sf::Color(70, 70, 70));
+        s.track.setPosition(10, y + 28);
+        s.track.setFillColor(sf::Color(130, 78, 127));
 
-        s.thumb.setRadius(8);
-        s.thumb.setFillColor(sf::Color::Cyan);
-        s.thumb.setOrigin(8, 8);
+        s.thumb.setSize(sf::Vector2f(10.f, 20.f));
+        s.thumb.setFillColor(sf::Color(255, 153, 249));
+        s.thumb.setOrigin(5, 10);
 
         s.valText.setFont(font);
         s.valText.setCharacterSize(14);
-        s.valText.setFillColor(sf::Color::Yellow);
-        s.valText.setPosition(1160, y);
+        s.valText.setFillColor(sf::Color(200, 200, 200));
+        s.valText.setPosition(340, y+22);
 
         updateThumbPos(s);
         y += 45;
     }
 
-    std::vector<std::string> lNames = {"Speed:", "Ang. Freq:", "Wave Num:", "Phase:", "Time:", "Period:"};
+    /*std::vector<std::string> lNames = {"Speed:", "Ang. Freq:", "Wave Num:", "Phase:", "Time:", "Period:"};
     y = 260;
     for (size_t i = 0; i < 6; ++i) {
         infoLabels[i].setFont(font);
@@ -87,7 +87,7 @@ void UIPanel::layout() {
         infoValues[i].setFillColor(sf::Color(100, 255, 100));
         infoValues[i].setPosition(1000, y);
         y += 22;
-    }
+    }*/
 }
 
 void UIPanel::updateThumbPos(Slider& s) {
