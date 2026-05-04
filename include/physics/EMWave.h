@@ -32,6 +32,10 @@ public:
     float getPhase() const { return phase; }
     float getTime() const { return time; }
 
+    float getSpeed() const { return speed; }
+    float getAngularFreq() const { return angular_freq; }
+    float getWaveNumber() const { return wave_number; }
+
     void setFrequency(float f);
     void setWavelength(float l);
     void setAmplitudeE(float a);
