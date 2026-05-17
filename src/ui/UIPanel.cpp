@@ -99,7 +99,8 @@ void UIPanel::handleEvent(const sf::Event& event, EMWave& wave) {
         for (int i = 0; i < 4; ++i) {
             if (sliders[i].isHovered(mp)) {
                 dragIdx = i;
-                float ratio = (mp.x - sliders[i].track.getPosition().x) / sliders[i].track.getSize().x;
+                auto bounds = sliders[i].track.getGlobalBounds();
+                float ratio = (mp.x - bounds.left) / bounds.width;
                 ratio = std::max(0.0f, std::min(1.0f, ratio));
                 sliders[i].curVal = sliders[i].minVal + ratio * (sliders[i].maxVal - sliders[i].minVal);
                 updateThumbPos(sliders[i]);
@@ -112,8 +113,9 @@ void UIPanel::handleEvent(const sf::Event& event, EMWave& wave) {
         dragIdx = -1;
     }
     else if (event.type == sf::Event::MouseMoved && dragIdx != -1) {
-        sf::Vector2f mp(static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y));
-        float ratio = (mp.x - sliders[dragIdx].track.getPosition().x) / sliders[dragIdx].track.getSize().x;
+        sf::Vector2f mp = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+        auto bounds = sliders[dragIdx].track.getGlobalBounds();
+        float ratio = (mp.x - bounds.left) / bounds.width;
         ratio = std::max(0.0f, std::min(1.0f, ratio));
         sliders[dragIdx].curVal = sliders[dragIdx].minVal + ratio * (sliders[dragIdx].maxVal - sliders[dragIdx].minVal);
         updateThumbPos(sliders[dragIdx]);
