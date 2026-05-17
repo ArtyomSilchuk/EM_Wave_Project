@@ -3,18 +3,18 @@
 #include <iomanip>
 #include <algorithm>
 
-UIPanel::UIPanel(sf::RenderWindow& window, const sf::Font& font)
+UIPanel::UIPanel(sf::RenderWindow& window, const sf::Font& font) // Panel
     : window(window), font(font), dragIdx(-1)
 {
-    bg.setSize({400, 300});
-    bg.setPosition(0, 0);
+    bg.setSize({400, 225});
+    bg.setPosition(5, 5);
     bg.setFillColor(sf::Color(89, 53, 87));
 
     title.setFont(font);
     title.setString("EM Wave Parameters");
     title.setCharacterSize(18);
     title.setFillColor(sf::Color::White);
-    title.setPosition(10, 10);
+    title.setPosition(120, 10);
 
     sliders.resize(4);
 
@@ -42,22 +42,22 @@ UIPanel::UIPanel(sf::RenderWindow& window, const sf::Font& font)
     sliders[3].maxVal = 150.0f;
     sliders[3].curVal = 100.0f;
 
-    infoLabels.resize(6);
-    infoValues.resize(6);
+    //infoLabels.resize(6);
+    //infoValues.resize(6);
     layout();
 }
 
 void UIPanel::layout() {
-    float y = 40;
+    float y = 35;
     for (auto& s : sliders) {
         s.label.setFont(font);
         s.label.setString(s.labelStr + ":");
         s.label.setCharacterSize(14);
         s.label.setFillColor(sf::Color(200, 200, 200));
-        s.label.setPosition(10, y);
+        s.label.setPosition(15, y+3);
 
         s.track.setSize({320, 6});
-        s.track.setPosition(10, y + 28);
+        s.track.setPosition(15, y + 30);
         s.track.setFillColor(sf::Color(130, 78, 127));
 
         s.thumb.setSize(sf::Vector2f(10.f, 20.f));
@@ -67,27 +67,11 @@ void UIPanel::layout() {
         s.valText.setFont(font);
         s.valText.setCharacterSize(14);
         s.valText.setFillColor(sf::Color(200, 200, 200));
-        s.valText.setPosition(340, y+22);
+        s.valText.setPosition(350, y+22);
 
         updateThumbPos(s);
         y += 45;
     }
-
-    /*std::vector<std::string> lNames = {"Speed:", "Ang. Freq:", "Wave Num:", "Phase:", "Time:", "Period:"};
-    y = 260;
-    for (size_t i = 0; i < 6; ++i) {
-        infoLabels[i].setFont(font);
-        infoLabels[i].setString(lNames[i]);
-        infoLabels[i].setCharacterSize(13);
-        infoLabels[i].setFillColor(sf::Color(180, 180, 180));
-        infoLabels[i].setPosition(825, y);
-
-        infoValues[i].setFont(font);
-        infoValues[i].setCharacterSize(13);
-        infoValues[i].setFillColor(sf::Color(100, 255, 100));
-        infoValues[i].setPosition(1000, y);
-        y += 22;
-    }*/
 }
 
 void UIPanel::updateThumbPos(Slider& s) {
@@ -111,7 +95,7 @@ void UIPanel::applyToWave(EMWave& wave, int idx) {
 
 void UIPanel::handleEvent(const sf::Event& event, EMWave& wave) {
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-        sf::Vector2f mp(static_cast<float>(event.mouseButton.x), static_cast<float>(event.mouseButton.y));
+        sf::Vector2f mp = window.mapPixelToCoords(sf::Mouse::getPosition(window));
         for (int i = 0; i < 4; ++i) {
             if (sliders[i].isHovered(mp)) {
                 dragIdx = i;
@@ -137,42 +121,6 @@ void UIPanel::handleEvent(const sf::Event& event, EMWave& wave) {
     }
 }
 
-void UIPanel::updateInfo(const EMWave& wave) {
-    std::ostringstream ss;
-    ss << std::fixed << std::setprecision(2);
-
-    // Speed
-    ss.str("");
-    ss << wave.getSpeed();
-    infoValues[0].setString(ss.str());
-    
-    // Angular Frequency
-    ss.str("");
-    ss << wave.getAngularFreq();
-    infoValues[1].setString(ss.str());
-    
-    // Wave Number
-    ss.str("");
-    ss << wave.getWaveNumber();
-    infoValues[2].setString(ss.str());
-    
-    // Phase
-    ss.str("");
-    ss << wave.getPhase();
-    infoValues[3].setString(ss.str());
-    
-    // Time
-    ss.str("");
-    ss << wave.getTime();
-    infoValues[4].setString(ss.str());
-    
-    // Period
-    ss.str("");
-    float period = (wave.getFrequency() > 0.0f) ? 1.0f / wave.getFrequency() : 0.0f;
-    ss << period;
-    infoValues[5].setString(ss.str());
-}
-
 void UIPanel::draw() {
     window.draw(bg);
     window.draw(title);
@@ -181,9 +129,5 @@ void UIPanel::draw() {
         window.draw(s.track);
         window.draw(s.thumb);
         window.draw(s.valText);
-    }
-    for (size_t i = 0; i < infoLabels.size(); ++i) {
-        window.draw(infoLabels[i]);
-        window.draw(infoValues[i]);
     }
 }
